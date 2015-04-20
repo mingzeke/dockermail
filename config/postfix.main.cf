@@ -21,8 +21,12 @@ readme_directory = no
 smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
 smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
 smtpd_use_tls=yes
-smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
-smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+
+# additional authentication settings
+smtpd_tls_auth_only = yes
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
 
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
 # information on enabling SSL in the smtp client.
@@ -31,11 +35,13 @@ smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 myhostname = localhost
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
-mydestination = /etc/mailname, localhost.localdomain, localhost
+myorigin = /etc/mailname
+mydestination = localhost
 relayhost = 
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_size_limit = 0
 recipient_delimiter = +
+inet_interfaces = all
 
 # SMTP configuration for incoming mail (port 25)
 # Outgoing mail (port 587) configuration  is specified in master.cf
@@ -55,25 +61,14 @@ smtpd_relay_restrictions = permit_auth_destination, reject
 
 # Mail thats not for us gets filtered out by smtpd_relay_restrictions
 # When the mail is for us, we just accept everything. (could add spam blocklists/user checking etc. here)
-smtpd_recipient_restrictions = permit
+smtpd_recipient_restrictions =
+        permit_sasl_authenticated,
+        permit_mynetworks,
+        reject_unauth_destination
 
 # Delivery to dovecot
-alias_maps = hash:/etc/aliases
-alias_database = hash:/etc/aliases
 virtual_alias_maps = hash:/etc/postfix/virtual
 virtual_mailbox_domains = /etc/postfix/virtual-mailbox-domains
 virtual_mailbox_maps = hash:/etc/postfix/virtual-mailbox-maps
 virtual_transport = dovecot
 dovecot_destination_recipient_limit = 1
-
-# additional authentication settings
-smtpd_tls_auth_only = yes
-smtpd_sasl_auth_enable = yes
-smtpd_sasl_type = dovecot
-smtpd_sasl_path = private/auth
-
-# DKIM
-milter_default_action = accept
-milter_protocol = 2
-smtpd_milters = inet:localhost:8891
-non_smtpd_milters = inet:localhost:8891
