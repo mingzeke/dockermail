@@ -1,16 +1,9 @@
-service imap-login {
-	inet_listener imap {
-
+service pop3-login {
+	inet_listener pop3 {
+	  port = 0
 	}
-
-	#disable imaps since we use TLS connections through the standard imap
-	inet_listener imaps {
-		port = 0
+	inet_listener pop3s {
 	}
-}
-
-service imap {
-
 }
 
 # not sure if this is needed
