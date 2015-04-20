@@ -2,12 +2,14 @@
 # First the key file
 if [ -f /mail_settings/ssl-cert-snakeoil.key ]; then
 	cp /mail_settings/ssl-cert-snakeoil.key /etc/ssl/private/ssl-cert-snakeoil.key
+	cp /mail_settings/ssl-cert-snakeoil.key /etc/dovecot/private/dovecot.pem
 else
 	cp /etc/ssl/private/ssl-cert-snakeoil.key /mail_settings/ssl-cert-snakeoil.key  
 fi
 # Then the pem file
 if [ -f /mail_settings/ssl-cert-snakeoil.pem ]; then
 	cp /mail_settings/ssl-cert-snakeoil.pem /etc/ssl/certs/ssl-cert-snakeoil.pem
+	cp /mail_settings/ssl-cert-snakeoil.pem /etc/dovecot/dovecot.pem
 else
 	cp /etc/ssl/certs/ssl-cert-snakeoil.pem /mail_settings/ssl-cert-snakeoil.pem  
 fi
