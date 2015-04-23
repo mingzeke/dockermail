@@ -2,6 +2,8 @@ FROM ubuntu:14.10
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN locale-gen en_GB en_GB.UTF-8 && dpkg-reconfigure locales
+RUN echo "Asia/Taipei" > /etc/timezone
+RUN dpkg-reconfigure tzdata
 
 # Prerequisites
 RUN apt-get update && apt-get install -y \
